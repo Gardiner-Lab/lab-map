@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>About · Lab Map</title>
+    <link rel="icon" type="image/svg+xml" href="{{ request.script_root }}/static/trellis/map.svg">
+    <link rel="stylesheet" href="{{ request.script_root }}/static/trellis/trellis.css?v={{ version }}">
+    <link rel="stylesheet" href="{{ request.script_root }}/static/css/map.css?v={{ version }}">
+</head>
+<body class="tt page">
+<header class="tt-bar">
+    <a class="tt-home" href="{{ links.suite_home }}" title="All of Trellis Tools"><img src="{{ request.script_root }}/static/trellis/trellis.svg" alt=""><span>Trellis Tools</span></a>
+    <a class="tt-module" href="{{ request.script_root }}/"><img src="{{ request.script_root }}/static/trellis/map.svg" alt="">Lab Map</a><span class="tt-sub">About</span>
+</header>
+<main class="help">
+    <h1>Lab Map {{ version }}</h1>
+    <p class="lead">Each lab's floor plans, with the fridges, freezers, cabinets and equipment on them: what is
+       kept where, from Lab Stocks, and what is booked when, from Booking.
+       <a href="{{ request.script_root }}/help">How to use it →</a></p>
+
+    <h2>Who sees what</h2>
+    <p>A map is its lab's: the lab's members see it, its lab admins upload and mark it, and the suite's
+       administrators can do both for any lab. The stocks and bookings a place shows come from Lab Stocks and
+       Booking as they would for you there, so a map never shows more than those tools do.</p>
+
+    <h2>Where the data is kept</h2>
+    <p>In the suite's <code>map-data</code> volume: <code>map.db</code> (maps and places) and <code>plans/</code>
+       (each drawing as a PNG). Both are in the suite's backups.</p>
+
+    <h2>Licence</h2>
+    <p>Free software, as the rest of Trellis Tools. PDFs are read with PyMuPDF (AGPL).</p>
+</main>
+</body>
+</html>

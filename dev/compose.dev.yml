@@ -1,0 +1,42 @@
+# Lab Map beside a running suite, for development, until it is one of the suite's own services.
+#
+#   docker compose -f dev/compose.dev.yml up -d --build
+#
+# Joins the suite's network and reads its account directory and labs; the suite's proxy
+# needs a /map/ location (see dev/nginx-location.conf).
+name: lab-map-dev
+
+services:
+  map:
+    build: ..
+    image: lab-map:local
+    container_name: lab-map
+    volumes:
+      - map-data:/map
+      - moclo-data:/moclo:ro
+      - suite-data:/suite:ro
+    environment:
+      - URL_PREFIX=/map
+      - SUITE_HOME_URL=/
+      - SUITE_LOGIN_URL=/account/login
+      - SUITE_LOGOUT_URL=/account/logout
+      - STOCKS_URL=/stocks
+      - BOOKING_URL=/booking
+    networks:
+      suite:
+        aliases: [map]
+    restart: unless-stopped
+
+volumes:
+  map-data:
+  moclo-data:
+    external: true
+    name: gardiner-lab-suite_moclo-data
+  suite-data:
+    external: true
+    name: gardiner-lab-suite_suite-data
+
+networks:
+  suite:
+    external: true
+    name: gardiner-lab-suite_default

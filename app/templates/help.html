@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Help · Lab Map</title>
+    <link rel="icon" type="image/svg+xml" href="{{ request.script_root }}/static/trellis/map.svg">
+    <link rel="stylesheet" href="{{ request.script_root }}/static/trellis/trellis.css?v={{ version }}">
+    <link rel="stylesheet" href="{{ request.script_root }}/static/css/map.css?v={{ version }}">
+</head>
+<body class="tt page">
+<header class="tt-bar">
+    <a class="tt-home" href="{{ links.suite_home }}" title="All of Trellis Tools"><img src="{{ request.script_root }}/static/trellis/trellis.svg" alt=""><span>Trellis Tools</span></a>
+    <a class="tt-module" href="{{ request.script_root }}/"><img src="{{ request.script_root }}/static/trellis/map.svg" alt="">Lab Map</a><span class="tt-sub">Help</span>
+</header>
+<main class="help">
+    <h1>Using the Lab Map</h1>
+    <p class="lead">Your lab's floor plan, with its fridges, freezers, cabinets and equipment marked. Click a freezer
+       to see the stocks kept in it; click a machine to see today's bookings and book it.</p>
+
+    <h2>Finding something</h2>
+    <ul>
+        <li>Scroll or pinch to zoom, drag to move about; <strong>⤢</strong> shows the whole floor again.</li>
+        <li>Type in <em>Find</em>: places whose name, room or kind match light up, the rest fade. <kbd>Enter</kbd> goes to the first.</li>
+        <li>The coloured chips are the kinds of place on the map: click one to hide or show them all.</li>
+        <li>The list beside the map is by room. Click a place there, or on the map, to open it.</li>
+        <li><strong>🔗 Link</strong> copies an address that opens the map on that place, to put in a protocol or the notebook.</li>
+    </ul>
+
+    <h2>What a place shows</h2>
+    <ul>
+        <li><strong>Fridges, freezers, cabinets</strong>: the stock records (glycerol stocks, primers, chemicals,
+            antibodies, plant material) whose place is this one, from Lab Stocks. You see what Lab Stocks lets you see.</li>
+        <li><strong>Equipment</strong> linked to Booking: whether it is free now, today's bookings, and
+            <strong>Book it</strong>, which opens its calendar.</li>
+    </ul>
+
+    <h2>Making the map (lab admins)</h2>
+    <ol>
+        <li><strong>Upload a floor plan</strong> (＋ beside the map's name). A PDF from the architect or facilities
+            is best: the fridges, freezers, cabinets and equipment its labels name are offered as suggestions.
+            A picture works too; you then draw every place yourself.</li>
+        <li>Tick the suggestions that are your lab's and add them. They come with a name and the nearest room;
+            check both.</li>
+        <li><strong>Draw a box</strong> or <strong>Draw an outline</strong> for anything else. Choose a place and
+            drag it, or its corners, to put it right.</li>
+        <li>For a machine, choose what it is <em>Booked in Booking as</em>. For storage, older stock records that
+            say where they are in words can be found by those words (<em>Older stock records call it</em>).</li>
+    </ol>
+    <p>A new version of the drawing (Map settings) keeps the places where they were on the page, so a revised
+       plan of the same floor needs no re-marking.</p>
+
+    <h2>Labels the PDF reader knows</h2>
+    <table>
+        <tr><th>Label</th><th>Becomes</th></tr>
+        <tr><td>KK</td><td>Fridge (koelkast)</td></tr>
+        <tr><td>VR, -20</td><td>Freezer, -20 °C (vriezer)</td></tr>
+        <tr><td>-80, VR (-80)</td><td>Freezer, -80 °C</td></tr>
+        <tr><td>KK/VR</td><td>Fridge-freezer</td></tr>
+        <tr><td>koelcel</td><td>Cold room</td></tr>
+        <tr><td>Kast</td><td>Cabinet</td></tr>
+        <tr><td>FC, BSC, FSSC, FSCG, INC, IJS</td><td>Equipment: flow cabinet, biosafety cabinet, fume cupboards, incubator, ice machine</td></tr>
+    </table>
+</main>
+</body>
+</html>

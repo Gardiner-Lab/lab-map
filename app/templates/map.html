@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lab Map</title>
+    <link rel="icon" type="image/svg+xml" href="{{ request.script_root }}/static/trellis/map.svg">
+    <link rel="stylesheet" href="{{ request.script_root }}/static/trellis/trellis.css?v={{ version }}">
+    <link rel="stylesheet" href="{{ request.script_root }}/static/css/map.css?v={{ version }}">
+</head>
+<body class="tt{% if embed %} embedded{% endif %}">
+{% if not embed %}
+<header class="tt-bar">
+    <a class="tt-home" href="{{ links.suite_home }}" title="All of Trellis Tools"><img src="{{ request.script_root }}/static/trellis/trellis.svg" alt=""><span>Trellis Tools</span></a>
+    <a class="tt-module" href="{{ request.script_root }}/"><img src="{{ request.script_root }}/static/trellis/map.svg" alt="">Lab Map</a>
+    <nav class="tt-links">
+        <a href="{{ request.script_root }}/help">Help</a>
+        <a href="{{ request.script_root }}/about">About</a>
+    </nav>
+    <span class="tt-user">{{ person.username }}{% if person.labs %} · {{ person.labs[0].lab }}{% endif %}{% if person.is_admin %} · admin{% endif %}</span>
+    <a class="tt-logout" href="{{ links.logout }}">Log out</a>
+</header>
+{% endif %}
+<div class="layout" id="layout">
+    <aside class="side" id="side">
+        <div class="side-head">
+            <select id="map-choice" aria-label="Map"></select>
+            <button class="tt-btn icon-only" id="new-map" title="Add a map" hidden>＋</button>
+        </div>
+        <input type="search" id="find" placeholder="Find a fridge, freezer, cabinet…" autocomplete="off">
+        <div class="legend" id="legend"></div>
+        <ul class="place-list" id="place-list"></ul>
+    </aside>
+    <section class="stage-wrap">
+        <div class="toolbar" id="toolbar"></div>
+        <div class="stage" id="stage" tabindex="0">
+            <div class="world" id="world">
+                <img id="overview" alt="" draggable="false">
+                <img id="drawing" alt="" draggable="false" hidden>
+                <svg id="overlay" xmlns="http://www.w3.org/2000/svg"></svg>
+            </div>
+            <div class="zoom">
+                <button class="tt-btn" id="zoom-in" title="Zoom in">+</button>
+                <button class="tt-btn" id="zoom-out" title="Zoom out">−</button>
+                <button class="tt-btn" id="zoom-fit" title="Whole map">⤢</button>
+            </div>
+            <div class="tip" id="tip" hidden></div>
+            <div class="empty" id="empty" hidden></div>
+        </div>
+    </section>
+    <aside class="panel" id="panel" hidden></aside>
+</div>
+<dialog id="dialog" class="dialog"></dialog>
+<div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+<script>
+    window.MAP = {
+        base: {{ request.script_root | tojson }},
+        stocks: {{ links.stocks | tojson }},
+        booking: {{ links.booking | tojson }},
+        person: {{ person.to_dict() | tojson }},
+        embed: {{ 'true' if embed else 'false' }},
+    };
+</script>
+<script src="{{ request.script_root }}/static/js/map.js?v={{ version }}"></script>
+<script src="{{ request.script_root }}/static/trellis/modules.js?v={{ version }}" defer></script>
+</body>
+</html>

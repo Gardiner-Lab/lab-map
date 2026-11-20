@@ -1,0 +1,5 @@
+_booking_ref/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.pdf
