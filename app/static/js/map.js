@@ -51,6 +51,9 @@ const kids = (list) => list.flat(Infinity).filter((k) => k !== null && k !== und
 const put = (node, ...children) => node.replaceChildren(...kids(children));
 const add = (node, ...children) => node.append(...kids(children));
 
+/** One of the suite's icons (static/trellis/glyphs), in text and on buttons, as the other tools use them. */
+const glyph = (name) => el('img', { class: 'tt-glyph', src: `${MAP.base}/static/trellis/glyphs/${name}.svg`, alt: '' });
+
 function svg(tag, attrs = {}) {
   const node = document.createElementNS(SVG, tag);
   for (const [k, v] of Object.entries(attrs)) if (v !== null && v !== undefined) node.setAttribute(k, v);
@@ -284,7 +287,7 @@ function drawToolbar() {
   bar.replaceChildren();
   if (!state.map || !canEdit()) return;
   if (!state.editing) {
-    add(bar, el('button', { class: 'tt-btn', onclick: () => setEditing(true) }, '✎ Edit this map'),
+    add(bar, el('button', { class: 'tt-btn', onclick: () => setEditing(true) }, glyph('pencil'), ' Edit this map'),
       el('span', { class: 'hint' }, `${state.map.lab}'s map: you can mark places on it.`));
     return;
   }
@@ -297,14 +300,14 @@ function drawToolbar() {
     tool('select', 'Select', 'Choose a place; drag it or its corners'),
     tool('rect', '▭ Draw a box', 'Drag out a box round the thing'),
     tool('poly', '⬠ Draw an outline', 'Click each corner; click the first again, or double-click, to finish'),
-    n ? el('button', { class: 'tt-btn', onclick: suggestionsDialog }, `✨ ${n} suggested`) : null,
+    n ? el('button', { class: 'tt-btn', onclick: suggestionsDialog }, glyph('tip'), ` ${n} suggested`) : null,
     el('span', { class: 'hint' }, {
       select: 'Click a place to change it; drag to move it.',
       rect: 'Drag out a box round the thing.',
       poly: 'Click each corner, then the first again (or double-click).',
     }[state.tool]),
     el('span', { class: 'spacer' }),
-    el('button', { class: 'tt-btn', onclick: mapDialog }, 'Map settings'),
+    el('button', { class: 'tt-btn', onclick: mapDialog }, glyph('gear'), ' Map settings'),
     el('button', { class: 'tt-btn primary', onclick: () => setEditing(false) }, 'Done'),
   );
 }
@@ -450,13 +453,13 @@ function showPlace(place) {
   if (!place.resource_id && !place.storage) parts.push(el('p', { class: 'muted' }, 'Not linked to anything to book.'));
   if (canEdit()) {
     parts.push(el('div', { class: 'actions' },
-      el('button', { class: 'tt-btn', onclick: () => editPlace(place) }, '✎ Change'),
+      el('button', { class: 'tt-btn', onclick: () => editPlace(place) }, glyph('pencil'), ' Change'),
       el('button', {
         class: 'tt-btn', title: 'Copy a link to this place',
         onclick: () => copyLink(place),
-      }, '🔗 Link')));
+      }, glyph('link'), ' Link')));
   } else {
-    parts.push(el('div', { class: 'actions' }, el('button', { class: 'tt-btn', onclick: () => copyLink(place) }, '🔗 Link to this place')));
+    parts.push(el('div', { class: 'actions' }, el('button', { class: 'tt-btn', onclick: () => copyLink(place) }, glyph('link'), ' Link to this place')));
   }
   put(panel, ...parts.filter(Boolean));
   if (place.resource_id) fillBooking(booking, place);
@@ -495,7 +498,7 @@ async function fillBooking(box, place) {
             el('span', { class: 'when' }, `${hm(new Date(b.start))}–${hm(new Date(b.end))}`),
             el('span', {}, b.title || b.booked_by))))
           : el('p', { class: 'muted' }, 'Nothing booked today.'),
-        el('div', { class: 'actions' }, el('a', { class: 'tt-btn primary', href, target }, '📅 Book it')),
+        el('div', { class: 'actions' }, el('a', { class: 'tt-btn primary', href, target }, glyph('calendar'), ' Book it')),
       ];
     }
   } catch (err) {

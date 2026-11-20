@@ -11,7 +11,7 @@ import os
 
 from flask import Flask, abort, redirect, render_template, request, send_file
 
-APP_VERSION = '0.1.0'
+APP_VERSION = '0.1.1'
 
 # The tabs this tool adds to the suite's dashboard (see the suite's pages/dashboard.html).
 MANIFEST = {
