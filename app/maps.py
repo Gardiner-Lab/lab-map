@@ -133,20 +133,23 @@ def get(person: Person, map_id: str) -> dict:
     return map_dict(person, row, [place_dict(p) for p in places])
 
 
-def drawing_path(map_id: str, overview: bool = False) -> str:
-    return os.path.join(db.files(), f"{map_id}{'-overview' if overview else ''}.png")
+def _save(conn, img, map_id: str) -> None:
+    """The drawing, and its overview, kept in the database: the suite's backup copies them with it."""
+    for size, data in (('full', plans.png(img)), ('overview', plans.overview(img))):
+        conn.execute('INSERT OR REPLACE INTO drawings (map_id, size, png) VALUES (?, ?, ?)', (map_id, size, data))
 
 
-def _save(img, map_id: str) -> None:
-    plans.save_png(img, drawing_path(map_id))
-    plans.save_overview(img, drawing_path(map_id, overview=True))
-
-
-def drawing(person: Person, map_id: str, overview: bool = False) -> str:
+def drawing(person: Person, map_id: str, overview: bool = False):
+    """The drawing as PNG bytes, and when it last changed (for the browser's cache)."""
     with db.connect() as conn:
-        _seen(person, conn, map_id)
-    path = drawing_path(map_id, overview)
-    return path if os.path.exists(path) or not overview else drawing_path(map_id)
+        row = _seen(person, conn, map_id)
+        found = conn.execute('SELECT png FROM drawings WHERE map_id = ? AND size = ?',
+                             (map_id, 'overview' if overview else 'full')).fetchone()
+        if found is None and overview:
+            found = conn.execute("SELECT png FROM drawings WHERE map_id = ? AND size = 'full'", (map_id,)).fetchone()
+    if found is None:
+        raise NotFound('This map has no drawing')
+    return found['png'], row['updated_at']
 
 
 def _read_upload(data: bytes, filename: str, page: int):
@@ -164,8 +167,8 @@ def create(person: Person, lab_id: str, name: str, data: bytes, filename: str, p
     name = _text(name, 120) or os.path.splitext(os.path.basename(filename or ''))[0][:120] or 'Floor plan'
     img, suggestions = _read_upload(data, filename, page)
     map_id = plans.new_id()
-    _save(img, map_id)
     with db.connect() as conn:
+        _save(conn, img, map_id)
         conn.execute('INSERT INTO maps (id, lab_id, name, width, height, source_name, suggestions, created_by) '
                      'VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                      (map_id, lab_id, name, img.width, img.height, _text(os.path.basename(filename or ''), 200),
@@ -181,8 +184,8 @@ def replace_drawing(person: Person, map_id: str, data: bytes, filename: str, pag
     with db.connect() as conn:
         _editable(person, conn, map_id)
     img, suggestions = _read_upload(data, filename, page)
-    _save(img, map_id)
     with db.connect() as conn:
+        _save(conn, img, map_id)
         conn.execute('UPDATE maps SET width = ?, height = ?, source_name = ?, suggestions = ?, '
                      "updated_at = strftime('%Y-%m-%d %H:%M:%f', 'now') WHERE id = ?",
                      (img.width, img.height, _text(os.path.basename(filename or ''), 200), json.dumps(suggestions), map_id))

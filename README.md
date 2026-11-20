@@ -17,14 +17,15 @@ Stocks and bookings are fetched by the browser from those tools' own APIs, so th
 ## Running it
 
 It runs inside the suite at `/map/`, behind the suite's proxy, which says who is signed in (`X-Suite-User`).
-Not part of the suite's `docker-compose.yml` or `install.sh` yet. For development beside a running suite:
+Part of the suite from Trellis Tools 2.61.0, which pins this image (`ghcr.io/gardiner-lab/lab-map`). To try a change
+against a running suite, build it from here with the suite's `docker-compose.local.yml`, or beside it:
 
 ```sh
 docker compose -f dev/compose.dev.yml up -d --build
-# and add dev/nginx-location.conf to the suite's nginx/default.conf, then: docker exec lab-proxy nginx -s reload
 ```
 
-Data: the `map-data` volume holds `map.db` (maps and places) and `plans/` (each drawing as a PNG, with an overview).
+Data: the `map-data` volume holds one database, `map.db`: the maps, their places, and each drawing (a PNG and a
+small overview), so the suite's nightly database backup carries all of it.
 
 ## Tests
 

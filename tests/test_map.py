@@ -117,3 +117,14 @@ def test_signed_out(client):
     assert client.get('/api/maps').status_code == 401
     assert client.get('/').status_code == 302
     assert client.get('/health').json['status'] == 'healthy'
+
+
+def test_the_drawing_is_kept_in_the_database_and_cached(client, plan_pdf):
+    ann = client.as_user('ann')
+    map_id = upload(ann, plan_pdf).json['map']['id']
+    full = client.as_user('bob').get(f'/plans/{map_id}.png')
+    small = client.as_user('bob').get(f'/plans/{map_id}-overview.png')
+    assert full.status_code == 200 and full.data[:8] == b'\x89PNG\r\n\x1a\n'
+    assert small.status_code == 200 and len(small.data) < len(full.data)
+    again = client.as_user('bob').get(f'/plans/{map_id}.png', headers={'If-None-Match': full.headers['ETag']})
+    assert again.status_code == 304

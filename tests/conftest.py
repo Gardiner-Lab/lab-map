@@ -33,7 +33,6 @@ def app(tmp_path, monkeypatch):
     monkeypatch.setenv('MOCLO_DATABASE_PATH', str(moclo))
     monkeypatch.setenv('SUITE_DATABASE_PATH', str(suite))
     monkeypatch.setenv('MAP_DATABASE_PATH', str(tmp_path / 'map' / 'map.db'))
-    monkeypatch.setenv('MAP_FILES', str(tmp_path / 'map' / 'plans'))
     monkeypatch.delenv('URL_PREFIX', raising=False)
     from app.main import create_app
     flask_app = create_app()

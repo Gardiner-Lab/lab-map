@@ -11,7 +11,6 @@ COPY pytest.ini .
 
 ENV PYTHONUNBUFFERED=1 \
     MAP_DATABASE_PATH=/map/map.db \
-    MAP_FILES=/map/plans \
     MOCLO_DATABASE_PATH=/moclo/moclo.db \
     SUITE_DATABASE_PATH=/suite/suite.db \
     URL_PREFIX=/map \

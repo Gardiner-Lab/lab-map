@@ -6,6 +6,7 @@ labels name are offered to mark, and more can be drawn. Clicking a freezer shows
 stocks kept in it (from Stocks); clicking a piece of equipment opens its calendar in Booking.
 """
 
+import io
 import os
 
 from flask import Flask, abort, redirect, render_template, request, send_file
@@ -70,12 +71,11 @@ def create_app() -> Flask:
         if person is None:
             abort(401)
         try:
-            path = maps.drawing(person, map_id, overview)
+            data, changed = maps.drawing(person, map_id, overview)
         except maps.NotFound:
             abort(404)
-        if not os.path.exists(path):
-            abort(404)
-        response = send_file(path, mimetype='image/png', conditional=True)
+        response = send_file(io.BytesIO(data), mimetype='image/png', etag=f'{name}-{changed}', conditional=True,
+                             max_age=86400)
         response.headers['Cache-Control'] = 'private, max-age=86400'
         return response
 

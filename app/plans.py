@@ -208,8 +208,10 @@ def read(data: bytes, filename: str, page_number: int = 0) -> Tuple[Image.Image,
     return from_image(data)
 
 
-def save_png(img: Image.Image, path: str) -> None:
-    img.save(path, 'PNG', optimize=False, compress_level=6)
+def png(img: Image.Image) -> bytes:
+    buf = io.BytesIO()
+    img.save(buf, 'PNG', optimize=False, compress_level=6)
+    return buf.getvalue()
 
 
 # The whole floor at a glance: a drawing's hairlines vanish when a browser shrinks 6000 pixels to a
@@ -217,22 +219,10 @@ def save_png(img: Image.Image, path: str) -> None:
 OVERVIEW_SIDE = 2000
 
 
-def save_overview(img: Image.Image, path: str) -> None:
+def overview(img: Image.Image) -> bytes:
     from PIL import ImageFilter
     scale = OVERVIEW_SIDE / max(img.size)
     if scale >= 1:
-        img.save(path, 'PNG')
-        return
+        return png(img)
     thick = img.filter(ImageFilter.MinFilter(max(3, int(round(1 / scale)) | 1)))
-    thick.resize((round(img.width * scale), round(img.height * scale)), Image.LANCZOS).save(path, 'PNG')
-
-
-def rect_of(shape: dict) -> Optional[List[float]]:
-    """The box round a shape, as [x, y, w, h] fractions."""
-    if 'rect' in shape:
-        return list(shape['rect'])
-    pts = shape.get('poly') or []
-    if not pts:
-        return None
-    xs, ys = [p[0] for p in pts], [p[1] for p in pts]
-    return [min(xs), min(ys), max(xs) - min(xs), max(ys) - min(ys)]
+    return png(thick.resize((round(img.width * scale), round(img.height * scale)), Image.LANCZOS))
